@@ -11,6 +11,7 @@ def get_info():
 
     while data:
         next_token = data.get('NextToken')
+
         for reservation in data['Reservations']:
             for instance in reservation['Instances']:
                 ec2_instance_id = instance.get('InstanceId')
