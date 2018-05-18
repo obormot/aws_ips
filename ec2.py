@@ -40,9 +40,6 @@ def get_info():
                         'ec2_public_dns_names': list(ec2_public_dns_names),
                     })
 
-        if next_token is None:
-            data = None
-        else:
-            data = client.describe_instances(NextToken=next_token)
+        data = client.describe_instances(NextToken=next_token) if next_token is not None else None
 
     return result
