@@ -1,9 +1,9 @@
 """
 Elasticsearch utils
 """
-import socket
-
 import boto3
+
+from utils import resolve_host
 
 
 def get_info():
@@ -22,7 +22,7 @@ def get_info():
             result.append({
                 'elasticsearch_domain_id': domain.get('DomainId'),
                 'elasticsearch_hostname': domain.get('Endpoint'),
-                'elasticsearch_ip': socket.gethostbyname(domain.get('Endpoint')),
+                'elasticsearch_ip': resolve_host(domain.get('Endpoint')),
             })
 
     return result
