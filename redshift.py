@@ -5,10 +5,9 @@ import boto3
 
 
 def get_info():
-    client = boto3.client('redshift')
-
-    data = client.describe_clusters()
     result = []
+    client = boto3.client('redshift')
+    data = client.describe_clusters()
 
     for cluster in data.get('Clusters', []):
         if cluster.get('PubliclyAccessible', False):

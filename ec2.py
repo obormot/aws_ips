@@ -5,12 +5,11 @@ import boto3
 
 
 def get_info():
-    client = boto3.client('ec2')
-
-    data = client.describe_instances()
     result = []
+    client = boto3.client('ec2')
+    data = client.describe_instances()
 
-    while True:
+    while data:
         next_token = data.get('NextToken')
         for reservation in data['Reservations']:
             for instance in reservation['Instances']:
@@ -42,8 +41,8 @@ def get_info():
                     })
 
         if next_token is None:
-            break
-
-        data = client.describe_instances(NextToken=next_token)
+            data = None
+        else:
+            data = client.describe_instances(NextToken=next_token)
 
     return result
