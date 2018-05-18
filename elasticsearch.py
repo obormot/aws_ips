@@ -1,6 +1,8 @@
 """
 Elasticsearch utils
 """
+import socket
+
 import boto3
 
 
@@ -20,6 +22,7 @@ def get_info():
             result.append({
                 'elasticsearch_domain_id': domain.get('DomainId'),
                 'elasticsearch_hostname': domain.get('Endpoint'),
+                'elasticsearch_ip': socket.gethostbyname(domain.get('Endpoint')),
             })
 
     return result
