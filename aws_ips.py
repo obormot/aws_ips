@@ -7,6 +7,7 @@ import cloudfront
 import elb
 import elbv2
 import rds
+import lightsail
 
 from utils import jprint
 
@@ -20,6 +21,7 @@ def main():
     jprint(elb.get_info())
     jprint(elbv2.get_info())
     jprint(rds.get_info())
+    jprint(lightsail.get_info())
 
 
 if __name__ == '__main__':
