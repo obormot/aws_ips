@@ -1,28 +1,24 @@
 #!/usr/bin/env python
-import ec2
-import redshift
-import elasticsearch
-import apigateway
-import cloudfront
-import elb
-import elbv2
-import rds
-import lightsail
+import argparse
 
-from utils import jprint
+from aws_ips.cli import handler
 
 
 def main():
-    jprint(ec2.get_info())
-    jprint(redshift.get_info())
-    jprint(elasticsearch.get_info())
-    jprint(apigateway.get_info())
-    jprint(cloudfront.get_info())
-    jprint(elb.get_info())
-    jprint(elbv2.get_info())
-    jprint(rds.get_info())
-    jprint(lightsail.get_info())
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-s', '--service', type=str, default='',
+        help='Comma separated list of services to check. Available services are apigateway, cloudfront, ec2, '
+             'elasticsearch, elb, elbv2, lightsail, rds, redshift. Default is all.')
+    parser.add_argument(
+        '-f', '--format', type=str, default='text',
+        help='Output format. Available formats are text, json, pretty (pretty json), jl (json lines). Default is test.')
+    parser.add_argument(
+        '-v', '--verbose', default=False, dest='verbose', action='store_true',
+        help='Enable verbose output. The verbose output includes additional things like'
+             'service names, instance IDs and DNS.')
 
+    handler(parser.parse_args())
 
 if __name__ == '__main__':
     main()

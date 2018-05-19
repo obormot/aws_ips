@@ -3,11 +3,10 @@ Elasticsearch utils
 """
 import boto3
 
-from utils import resolve_host
+from aws_ips.utils import resolve_host
 
 
 def get_info():
-    result = []
     client = boto3.client('es')
 
     domains = []
@@ -19,10 +18,9 @@ def get_info():
     if domains:
         data = client.describe_elasticsearch_domains(DomainNames=domains)
         for domain in data.get('DomainStatusList'):
-            result.append({
-                'elasticsearch_domain_id': domain.get('DomainId'),
-                'elasticsearch_hostname': domain.get('Endpoint'),
-                'elasticsearch_ip': resolve_host(domain.get('Endpoint')),
-            })
-
-    return result
+            yield {
+                'id': domain.get('DomainId'),
+                'service_name': 'Elasticsearch',
+                'public_ip_v4': [resolve_host(domain.get('Endpoint'))],
+                'public_dns': [domain.get('Endpoint')],
+            }

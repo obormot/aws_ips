@@ -16,4 +16,7 @@ def resolve_host(hostname):
     """
     Resolve hostname
     """
-    return socket.gethostbyname(hostname)
+    try:
+        return socket.gethostbyname(hostname)
+    except socket.gaierror:
+        return ''

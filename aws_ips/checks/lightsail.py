@@ -3,11 +3,10 @@ Lightsail utils
 """
 import boto3
 
-from utils import resolve_host
+from aws_ips.utils import resolve_host
 
 
 def get_info():
-    result = []
     client = boto3.client('lightsail')
 
     data = client.get_instances()
@@ -15,10 +14,11 @@ def get_info():
         next_page_token = data.get('nextPageToken')
 
         for instance in data.get('instances', []):
-            result.append({
-                'lightsail_id': instance.get('name'),
-                'lightsail_public_ip': instance.get('publicIpAddress'),
-            })
+            yield {
+                'id': instance.get('name'),
+                'service_name': 'Lightsail',
+                'public_ip_v4': [instance.get('publicIpAddress')],
+            }
 
         data = client.get_instances(pageToken=next_page_token) if next_page_token else None
 
@@ -27,12 +27,11 @@ def get_info():
         next_page_token = data.get('nextPageToken')
 
         for balancer in data.get('loadBalancers', []):
-            result.append({
-                'lightsail_id': balancer.get('name'),
-                'lightsail_public_dns_name': balancer.get('dnsName'),
-                'lightsail_public_ip': resolve_host(balancer.get('dnsName')),
-            })
+            yield {
+                'id': balancer.get('name'),
+                'service_name': 'Lightsail',
+                'public_ip_v4': [resolve_host(balancer.get('dnsName'))],
+                'public_dns': [balancer.get('dnsName')],
+            }
 
         data = client.get_load_balancers(pageToken=next_page_token) if next_page_token else None
-
-    return result
