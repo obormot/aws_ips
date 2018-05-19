@@ -6,6 +6,7 @@ import apigateway
 import cloudfront
 import elb
 import elbv2
+import rds
 
 from utils import jprint
 
@@ -18,6 +19,7 @@ def main():
     jprint(cloudfront.get_info())
     jprint(elb.get_info())
     jprint(elbv2.get_info())
+    jprint(rds.get_info())
 
 
 if __name__ == '__main__':
