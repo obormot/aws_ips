@@ -4,6 +4,17 @@ Setup script for the AWS IPs tool.
 It uses setuptools package https://pypi.org/project/setuptools/
 
 distutils didn't use because of https://docs.python.org/3/library/distutils.html
+
+Several setup.py examples:
+https://github.com/aws/aws-cli/blob/develop/setup.py
+https://github.com/pytorch/vision/blob/master/setup.py
+https://github.com/sibblegp/b2blaze/blob/master/setup.py
+
+NOTE: Also there is a setup.cfg file but it isn't in use here for now
+
+The official docs:
+https://docs.python.org/3/distutils/setupscript.html
+https://docs.python.org/3/distutils/configfile.html
 """
 import sys
 
