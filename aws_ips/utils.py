@@ -2,7 +2,7 @@
 Various utils
 """
 import json
-import socket
+import subprocess
 
 
 def jprint(anything):
@@ -16,7 +16,8 @@ def resolve_host(hostname):
     """
     Resolve hostname
     """
-    try:
-        return socket.gethostbyname(hostname)
-    except socket.gaierror:
+    if not hostname:
         return ''
+
+    out = subprocess.check_output(['dig', '+short', hostname])
+    return out.decode('ascii').split() if out else ''

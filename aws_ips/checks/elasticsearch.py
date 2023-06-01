@@ -18,9 +18,12 @@ def get_info():
     if domains:
         data = client.describe_elasticsearch_domains(DomainNames=domains)
         for domain in data.get('DomainStatusList'):
-            yield {
-                'id': domain.get('DomainId'),
-                'service_name': 'Elasticsearch',
-                'public_ip_v4': [resolve_host(domain.get('Endpoint'))],
-                'public_dns': [domain.get('Endpoint')],
-            }
+            hostname = domain.get('Endpoint')
+            ips = resolve_host(hostname)
+            if ips:  # if resolves to a public IP
+                yield {
+                    'id': domain.get('DomainId'),
+                    'service_name': 'Elasticsearch',
+                    'public_ip_v4': ips,
+                    'public_dns': [hostname],
+                }

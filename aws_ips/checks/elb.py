@@ -16,11 +16,14 @@ def get_info():
 
         for description in data.get('LoadBalancerDescriptions', []):
             if description.get('Scheme') == 'internet-facing':
-                yield {
-                    'id': description.get('CanonicalHostedZoneNameID'),
-                    'service_name': 'ELB',
-                    'public_ip_v4': [resolve_host(description.get('DNSName'))],
-                    'public_dns': [description.get('DNSName')],
-                }
+                hostname = description.get('DNSName')
+                ips = resolve_host(hostname)
+                if ips:  # if resolves to a public IP
+                    yield {
+                        'id': description.get('CanonicalHostedZoneNameID'),
+                        'service_name': 'ELB',
+                        'public_ip_v4': ips,
+                        'public_dns': [hostname],
+                    }
 
         data = client.describe_load_balancers(Marker=next_marker) if next_marker else None

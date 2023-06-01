@@ -2,6 +2,7 @@
 Command line handler
 """
 import json
+import os
 
 from aws_ips.utils import jprint
 from aws_ips.checks import (
@@ -49,13 +50,13 @@ def _get_results(services):
         for item in rds.get_info():
             yield item
 
-    if 'lightsail' in services or 'all' in services:
-        for item in lightsail.get_info():
-            yield item
+    # if 'lightsail' in services or 'all' in services:
+    #     for item in lightsail.get_info():
+    #         yield item
 
-    if 'redshift' in services or 'all' in services:
-        for item in redshift.get_info():
-            yield item
+    # if 'redshift' in services or 'all' in services:
+    #     for item in redshift.get_info():
+    #         yield item
 
 
 def _print_text(item, verbose):
@@ -119,15 +120,20 @@ def handler(args):
     :return:
     """
     services = args.service.split(',') if args.service else ['all']
-    for item in _get_results(services):
-        if args.format == 'text':
-            _print_text(item, args.verbose)
+    for region in ['us-west-2', 'ap-southeast-2', 'eu-west-1', 'ca-central-1']:
+        os.environ['AWS_DEFAULT_REGION'] = region
 
-        if args.format == 'jl':
-            _print_json_line(item, args.verbose)
+        for item in _get_results(services):
+            item['region'] = region
 
-        if args.format == 'json' or args.format == 'pretty':
-            _collect_items(item, args.verbose)
+            if args.format == 'text':
+                _print_text(item, args.verbose)
+
+            if args.format == 'jl':
+                _print_json_line(item, args.verbose)
+
+            if args.format == 'json' or args.format == 'pretty':
+                _collect_items(item, args.verbose)
 
     if args.format == 'json':
         print(json.dumps(_ITEMS, sort_keys=True))

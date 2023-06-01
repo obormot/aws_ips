@@ -15,11 +15,14 @@ def get_info():
 
         for api in data.get('items', []):
             hostname = '{}.execute-api.{}.amazonaws.com'.format(api.get('id'), client.meta.region_name)
-            yield {
-                'id': api.get('id'),
-                'service_name': 'API Gateway',
-                'public_ip_v4': [resolve_host(hostname)],
-                'public_dns': [hostname],
-            }
+            ips = resolve_host(hostname)
+            if ips:  # if resolves to a public IP
+                yield {
+                    'id': api.get('id'),
+                    'service_name': 'API Gateway',
+                    'public_ip_v4': ips,
+                    'public_dns': [hostname],
+                    'tags': api.get('tags'),
+                }
 
         data = client.get_rest_apis(position=position) if position else None

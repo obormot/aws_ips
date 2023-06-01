@@ -16,11 +16,14 @@ def get_info():
         next_marker = data.get('NextMarker')
         for distribution in data.get('Items', []):
             if distribution.get('Enabled'):
-                yield {
-                    'id': distribution['Id'],
-                    'service_name': 'CloudFront',
-                    'public_ip_v4': [resolve_host(distribution['DomainName'])],
-                    'public_dns': [distribution['DomainName']],
-                }
+                hostname = distribution['DomainName']
+                ips = resolve_host(hostname)
+                if ips:  # if resolves to a public IP
+                    yield {
+                        'id': distribution['Id'],
+                        'service_name': 'CloudFront',
+                        'public_ip_v4': ips,
+                        'public_dns': [hostname],
+                    }
 
         data = client.list_distributions(Marker=next_marker).get('DistributionList') if next_marker else None
